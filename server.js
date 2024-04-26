@@ -22,18 +22,29 @@ app.get('/', (req, res) => {
     res.json(db);
 })
 
-// app.delete('/api/notes', (req, res) => {
+app.get('/api/notes', (req, res) => {
+    const data = fs.readFileSync('./db/db.json', 'utf-8');
+    res.json(JSON.parse(data));
+})
 
-// })
+app.delete('/api/notes/:id', (req, res) => {
+    console.log('delete')
+    const data = fs.readFileSync('./db/db.json', 'utf-8');
+    console.log(data);
+    let dbData = JSON.parse(data);
+    const filteredNotes = dbData.filter((note) => {
+        return note.id !== req.params.id;
+    } )
+    fs.writeFileSync('./db/db.json', JSON.stringify(filteredNotes));
+    res.json(`ID ${req.params.id} was deleted`);
+})
 
 
 app.get('/notes', (req, res) => {
     res.sendFile(path.join(__dirname, './public/notes.html'));
 })
 
-app.get('/api/notes', (req, res) => {
-    res.json(db);
-})
+
 app.post('/api/notes', (req, res)=>{
     const { title, text } = req.body;
     const note = {
@@ -42,7 +53,6 @@ app.post('/api/notes', (req, res)=>{
         "id": uuid.v4(),
     }
     db.push(note);
-    console.log(db.title);
     fs.writeFile('./db/db.json', JSON.stringify(db), (err) => {
         err ? console.error(err):res.json(`${note.title} added to task list`);
     })
