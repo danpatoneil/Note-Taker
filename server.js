@@ -11,26 +11,25 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
-// app.use('/api', api)
+
 
 app.post('/', (req, res)=>{
     res.json('Post received');
 })
 
-
 app.get('/', (req, res) => {
     res.json(db);
 })
 
+//reads and returns the db
 app.get('/api/notes', (req, res) => {
     const data = fs.readFileSync('./db/db.json', 'utf-8');
     res.json(JSON.parse(data));
 })
 
+//deletes the record with the specified id from the db
 app.delete('/api/notes/:id', (req, res) => {
-    console.log('delete')
     const data = fs.readFileSync('./db/db.json', 'utf-8');
-    console.log(data);
     let dbData = JSON.parse(data);
     const filteredNotes = dbData.filter((note) => {
         return note.id !== req.params.id;
@@ -57,7 +56,7 @@ app.post('/api/notes', (req, res)=>{
         err ? console.error(err):res.json(`${note.title} added to task list`);
     })
 })
-
+//a get request to anything not specified above will simply redirect to the index.html
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, './public/index.html'));
 })
