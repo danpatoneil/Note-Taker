@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const db = require('./db/db.json');
 const fs = require('fs');
-const uuid = require('uuid');
+const uuid = require('uuid'); //I used uuid for a unique identifier for my file system
 
 const PORT = process.env.PORT || 3000;
 
